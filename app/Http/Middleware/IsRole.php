@@ -26,7 +26,7 @@ class IsRole
                 'errorType' => 'exception',
                 'exception' => null,
                 'httpCode' => 403,
-                'message' => trans('permissions.insufficient_permissions')
+                'message' => 'Not all permision to access'
             ], 403);
         }
     }

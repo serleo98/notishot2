@@ -18,13 +18,13 @@ class LoginResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->token->user->id,
-            'nick_name' => $this->token->user->nick_name,
-            'email' => $this->token->user->email,
+            'id' => $this->resource->id,
+            'nick_name'=> $this->resource->nick_name,
+            'email'=> $this->resource->email,
             'token' => $this->accessToken,
             'tokenType' => 'Bearer',
-            'role' => new RoleResource($this->token->user->role),
-            'profile' => new ProfileResource($this->token->user->profile),
-        ];
+            'role' => new RoleResource($this->resource->role),
+            //'profile' => new ProfileResource($this->resource->profile),
+            ];
     }
 }

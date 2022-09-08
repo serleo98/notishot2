@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 
+use App\Models\User\User;
 use App\Models\User\Profile;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -10,18 +11,32 @@ use App\Http\Requests\User\UserRequest;
 
 class UserController extends Controller
 {
-  
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+    protected $resource = UserResource::class;
+
+    public function index($toFind = null)
+    {
+        switch ($toFind) {
+            case 'active':
+                return $this->user->where('deleted_at', null)->where('role_id', 1)->get();
+            break;
+            case 'deleted':
+                return $this->user->onlyTrashed()->where('role_id', 1)->get();
+            break;
+            default:
+                return $this->user->where('role_id', '!=', 1)->get();
+            break;
+        }
+    }
+
     public function store(UserRequest $userRequest ) {
         return $userRequest;
     }
-
-
-    /*public function userList($toFind = null)
-    {
-        return $this->localRepository->getUsers($toFind);
-    }
-
-    public function update($user, Array $data) : String
+    
+    public function update($user, Array $data) 
     {
         $this->localRepository->updateUser($user, $data);
         
@@ -30,10 +45,10 @@ class UserController extends Controller
             $profile = Profile::where('user_id', $user->id)->first();
             $this->profileRepository->update($data['profile'],$profile);
         }
-        return trans('common.updated_user');
+        return ;
     }
 
-    public function destroy($user)
+   /* public function destroy($user)
     {
         $message = 'No se ha podido eliminar intente luego';
         if(is_null($user->profile))
