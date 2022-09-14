@@ -7,7 +7,6 @@ use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\LoginResource;
-use App\Http\Resources\User\RoleResource;
 use App\Http\Controllers\Api\Auth\LoggedUser;
 
 class LoginController extends Controller

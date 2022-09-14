@@ -6,17 +6,20 @@ namespace App\Http\Controllers\Api\User;
 use App\Models\User\User;
 use App\Models\User\Profile;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\User\UserRequest;
+use App\Http\Resources\User\UserResource;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    protected $userRequest = UserRequest::class;
+    protected $resource = UserResource::class;
+    
     public function __construct(User $user)
     {
         $this->user = $user;
     }
-    protected $resource = UserResource::class;
-
+    
     public function index($toFind = null)
     {
         switch ($toFind) {
@@ -32,20 +35,27 @@ class UserController extends Controller
         }
     }
 
-    public function store(UserRequest $userRequest ) {
-        return $userRequest;
+    public function store(UserRequest $request ) {
+        $data = $request->all();
+        $validate=Validator::make($data,[$this->resource]);
+        if($validate->fails()){
+            return response()->json($validate->errors());
+        }
+        $user = User::create($data);
+        return response([ 'User' => new UserResource($user), 
+        'message' => 'Success'], 200);
     }
     
     public function update($user, Array $data) 
-    {
-        $this->localRepository->updateUser($user, $data);
-        
-        if(isset($data['profile'])){
+    {        
+        /*if(isset($data['profile'])){
         
             $profile = Profile::where('user_id', $user->id)->first();
             $this->profileRepository->update($data['profile'],$profile);
         }
-        return ;
+        $user = User::create($data);
+        return response([ 'User' => new UserResource($user), 
+        'message' => 'Success'], 200);*/
     }
 
    /* public function destroy($user)

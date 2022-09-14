@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,14 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     
-    Route::namespace('App\Http\Controllers\Api\Auth')->group(function () {
+    Route::namespace('Api\Auth')->group(function () {
         Route::post('login', 'LoginController@login')->name('login');
         Route::post('logout', 'LoginController@logout')->name('logout');
     });
 
-
-    Route::middleware(['auth:api', 'is.role:administrador'])->prefix('admin')->group(function () {
-         Route::namespace('App\Http\Controllers\Api\User')->group(function () {
+    Route::/*middleware('client.credentials', 'is.role:administrador')->*/prefix('admin')->group(function () {
+         Route::namespace('Api\User')->group(function () {
              Route::resource('usuarios', 'UserController');
          });
     });

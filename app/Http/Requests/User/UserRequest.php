@@ -12,9 +12,11 @@ class UserRequest extends FormRequest
      *
      * @return bool
      */
+   
+
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
