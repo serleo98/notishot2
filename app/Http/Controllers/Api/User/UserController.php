@@ -46,8 +46,9 @@ class UserController extends Controller
         'message' => 'Success'], 200);
     }
     
-    public function update($user, Array $data) 
+    public function update(UserRequest $user, Array $data) 
     {        
+
         /*if(isset($data['profile'])){
         
             $profile = Profile::where('user_id', $user->id)->first();
@@ -58,15 +59,17 @@ class UserController extends Controller
         'message' => 'Success'], 200);*/
     }
 
-   /* public function destroy($user)
+    public function destroy($id)
     {
-        $message = 'No se ha podido eliminar intente luego';
+
+        /*$message = 'No se ha podido eliminar intente luego';
         if(is_null($user->profile))
         {
             $this->profileRepository->deleteProfile($user);
-        }
-        $this->localRepository->deleteUser($user);
+        }*/
         $message = 'Ha sido eliminado con exito';
+        $user = User::where('id',$id)->first();
+        isset($user) ? $user->delete() : $message = 'Error al eliminar Usuario'; 
         return $message;
     }
     public function registro (UserRequest $data)
@@ -74,5 +77,5 @@ class UserController extends Controller
         $data['role_id'] = 4;
         $this->store($data);
         return trans('common.register_user');
-    }*/
+    }
 }

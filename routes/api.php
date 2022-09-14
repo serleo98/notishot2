@@ -22,7 +22,7 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', 'LoginController@logout')->name('logout');
     });
 
-    Route::/*middleware('client.credentials', 'is.role:administrador')->*/prefix('admin')->group(function () {
+    Route::middleware(['auth:api', 'is.role:administrador'])->prefix('admin')->group(function () {
          Route::namespace('Api\User')->group(function () {
              Route::resource('usuarios', 'UserController');
          });

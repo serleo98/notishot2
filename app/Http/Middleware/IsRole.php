@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IsRole
 {
@@ -14,7 +16,7 @@ class IsRole
      * @param $role
      * @return mixed
      */
-    public function handle( $request, Closure $next, $role)
+    public function handle($request, Closure $next, $role)
     {
         if ($request->user()->isRole($role)) {
             return $next($request);
