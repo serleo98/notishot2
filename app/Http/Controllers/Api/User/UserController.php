@@ -40,8 +40,14 @@ class UserController extends Controller
         if($validate->fails()){
             return response()->json($validate->errors());
         }
-        $user = User::create($data);
-        return response([ 'User' => new UserResource($user), 
+        $this->user = User::create($data);
+        if(isset($data['profile']))
+            {
+                $profile = $data['profile'];
+                $profile['user_id']  = $this->user->id;
+                Profile::create($profile);
+            }
+        return response([ 'User' => new UserResource($this->user), 
         'message' => 'User create successfully'], 200);
     }
     
@@ -50,26 +56,20 @@ class UserController extends Controller
         $this->user= User::where('id',$data)->first(); 
         $this->user->fill($urequest->all());
         $this->user->save();
+        if(isset($data['profile'])){
+            $profile = Profile::where('user_id', $this->user->id)->first();
+            $profile->update($data['profile'],$profile);
+        }
         return response([ 'User' => $urequest->all(), 
         'message' => 'Update User successfully'], 200);
-        /*if(isset($data['profile'])){
-        
-            $profile = Profile::where('user_id', $user->id)->first();
-            $this->profileRepository->update($data['profile'],$profile);
-        }
-        */
     }
 
     public function destroy($id)
     {
-        /*$message = 'No se ha podido eliminar intente luego';
-        if(is_null($user->profile))
-        {
-            $this->profileRepository->deleteProfile($user);
-        }*/
-        $message = 'Ha sido eliminado con exito';
         $user = User::where('id',$id)->first();
-        isset($user) ? $user->delete() : $message = 'Error al eliminar Usuario'; 
+        $message = 'User deleted Succefully';
+        is_null($user->profile) ? $message .= ' and Profile deleted' : $user->profile()->delete($user->profile);
+        isset($user) ? $user->delete() : $message = 'Error from delete User'; 
         return $message;
     }
 }

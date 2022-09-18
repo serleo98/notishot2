@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'nick_name' => 'string',
-            'email' => ['string', 'email', 'max:255', Rule::unique('users')->ignore($this->user)],
+            'email' => ['string', 'email', 'max:255'],
             'c_password' => 'same:password',
             'role' => 'exists:roles,id',
             'profile.name'=>'string',

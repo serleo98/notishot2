@@ -4,11 +4,10 @@ namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Profile extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory;
     protected $table = 'profiles';
 
     protected $fillable = [
@@ -37,6 +36,6 @@ class Profile extends Model
     }
 
     public function user(){
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class);
     }
 }
