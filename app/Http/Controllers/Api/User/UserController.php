@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\User;
 
-
 use App\Models\User\User;
 use App\Models\User\Profile;
 use App\Http\Controllers\Controller;
@@ -23,22 +22,28 @@ class UserController extends Controller
     {
         switch ($toFind) {
             case 'active':
-                return $this->user->where('deleted_at', null)->where('role_id', 1)->get();
+                $this->user->where('deleted_at', null)->where('role_id', 1)->get();
+                return response()->json(['data' =>$this->user]);
             break;
             case 'deleted':
-                return $this->user->onlyTrashed()->where('role_id', 1)->get();
+                return response()->json([
+                    'data' =>$this->user->onlyTrashed()->where('role_id', 1)->get()
+                ]);
             break;
             default:
-                return $this->user->where('role_id', '!=', 1)->get();
-            break;
+                return response()->json([
+                    'data' =>$this->user->where('role_id', '!=', 1)->get()
+                ]);                
+                break;
         }
     }
 
     public function store(UserRequest $request ) {
         $data = $request->all();
         $validate=Validator::make($data,[$this->userResource]);
+        dd($validate->errors());
         if($validate->fails()){
-            return response()->json($validate->errors());
+            return response()->json(['data' => $validate->errors()]);
         }
         $this->user = User::create($data);
         if(isset($data['profile']))
@@ -47,8 +52,11 @@ class UserController extends Controller
                 $profile['user_id']  = $this->user->id;
                 Profile::create($profile);
             }
-        return response([ 'User' => new UserResource($this->user), 
-        'message' => 'User create successfully'], 200);
+        return response()->json([
+            'error'=> false,
+            'data'=> null,
+            'httpCod'=>http_response_code(),
+            'message' => new UserResource($this->user)], 200);
     }
     
     public function update(UpdateUserRequest $urequest,$data) 
@@ -60,7 +68,7 @@ class UserController extends Controller
             $profile = Profile::where('user_id', $this->user->id)->first();
             $profile->update($data['profile'],$profile);
         }
-        return response([ 'User' => $urequest->all(), 
+        return response(['User' => $urequest->all(), 
         'message' => 'Update User successfully'], 200);
     }
 
