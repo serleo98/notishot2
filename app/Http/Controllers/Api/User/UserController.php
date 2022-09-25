@@ -41,7 +41,6 @@ class UserController extends Controller
     public function store(UserRequest $request ) {
         $data = $request->all();
         $validate=Validator::make($data,[$this->userResource]);
-        dd($validate->errors());
         if($validate->fails()){
             return response()->json(['data' => $validate->errors()]);
         }
