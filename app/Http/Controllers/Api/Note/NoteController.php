@@ -10,8 +10,6 @@ use App\Http\Requests\Note\UpdateNoteRequest;
 
 class NoteController extends Controller
 {
-    protected $resource = NoteResource::class;
-
     /**
      * Display a listing of the resource.
      *
@@ -19,19 +17,28 @@ class NoteController extends Controller
      */
     public function index()
     {
-        
+        $userAuth= auth('api')->user()->id;
+        $notes = Note::with(['resources'])->get()->where('user_id',$userAuth);
+        $listaNotas = NoteResource::collection($notes);
+        return response()->json([
+            'data' => $listaNotas
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display the specified resource.
      *
+     * @param  \App\Models\Note\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function show(Note $note)
     {
-        //
+        $nota = Note::with(['resources'])->where('id',$note->id)->first();
+        $noteResource = new NoteResource($nota);
+        return response()->json([
+            'data' => $noteResource
+        ]);
     }
-//    Illuminate\Contracts\Container\BindingResolutionException: Target class [App\Http\Controllers\Note\NoteController] does not exist. in file C:\xampp\htdocs\Notishot2.0\vendor\laravel\framework\src\Illuminate\Container\Container.php on line 877
 
     /**
      * Store a newly created resource in storage.
@@ -43,18 +50,7 @@ class NoteController extends Controller
     {
         dd($request);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Note\Note  $note
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Note $note)
-    {
-        //
-    }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
