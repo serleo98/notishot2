@@ -17,7 +17,10 @@ use App\Http\Requests\Note\UpdateNoteRequest;
 class NoteController extends Controller
 {
     protected $NoteResource = NoteResource::class;
-
+    public function __construct(Note $nota)
+    {
+        $this->nota= $nota;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -56,19 +59,19 @@ class NoteController extends Controller
      */
     public function store(StoreNoteRequest $request)
     {
-        $data = $request->all();
         $user = Auth::user()->id;
-        $validate=Validator::make($data,[$this->NoteResource]);
-        $validate->fails() ? response()->json(['data' => $validate->errors()]) : $data['user_id'] = $user;
-        $note = Note::create($data);
-        if(isset($data['resource'])){
-            $path = Storage::putFileAs('/public/resource/imagenes',$data['resource'],Carbon::now()->format('YmdHis').'.jpg');
+        $validate=Validator::make($request->all(),[$this->NoteResource]);
+        $validate->fails() ? response()->json(['data' => $validate->errors()]) : $request['user_id'] = $user;
+        $note = Note::create($request->all());
+        if(isset($request['resource'])){
+            $path = Storage::putFileAs('/public/resource/imagenes',$request['resource'],Carbon::now()->format('YmdHis').'.jpg');
             $ext = File::extension($path);
             $resource['note_id'] = $note->id;
             $resource['type'] = $ext;
             $resource['route']  = Storage::url($path);
-            Resource::create($resource);
-        };
+            $resource = Resource::create($resource);
+            $note = $this->nota->where('id', $note->id)->with('resources')->first();
+        };        
         return response()->json(['data' => new NoteResource($note)]);
     }
     
