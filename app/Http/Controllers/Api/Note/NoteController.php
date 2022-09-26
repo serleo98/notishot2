@@ -74,17 +74,6 @@ class NoteController extends Controller
         };        
         return response()->json(['data' => new NoteResource($note)]);
     }
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Note\Note  $note
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Note $note)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -95,7 +84,15 @@ class NoteController extends Controller
      */
     public function update(UpdateNoteRequest $request, Note $note)
     {
-        //
+        $this->nota = Note::where('id',$note->id)->first();   
+        $this->nota->fill($request->all());
+        $this->nota->save();
+        if(isset($data['resource'])){
+            $resource = Resource::where('user_id', $this->user->id)->first();
+            $resource->update($data['resource'],$resource);
+        }
+        return response(['Note' => $request->all(), 
+        'message' => 'Update Note successfully'], 200);
     }
 
     /**

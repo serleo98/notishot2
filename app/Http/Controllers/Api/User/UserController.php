@@ -37,7 +37,11 @@ class UserController extends Controller
                 break;
         }
     }
-
+    public function show($id)
+    {
+        $userShow = $this->user->where('id',$id)->first();
+        return response()->json(['data' => new UserResource($userShow)]);
+    }
     public function store(UserRequest $request ) {
         $data = $request->all();
         $validate=Validator::make($data,[$this->userResource]);
