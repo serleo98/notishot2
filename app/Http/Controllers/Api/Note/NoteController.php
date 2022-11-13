@@ -64,6 +64,8 @@ class NoteController extends Controller
         $validate->fails() ? response()->json(['data' => $validate->errors()]) : $request['user_id'] = $user;
         $note = Note::create($request->all());
         if(isset($request['resource'])){
+            /* $resource = $request->file('resource')->store('public/resource/imagenes');
+*/
             $path = Storage::putFileAs('/public/resource/imagenes',$request['resource'],Carbon::now()->format('YmdHis').'.jpg');
             $ext = File::extension($path);
             $resource['note_id'] = $note->id;
