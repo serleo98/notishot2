@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\NoteSeeder;
 use Database\Seeders\CategorySeeder;
+use Database\Seeders\ResourceSeeder;
 use Database\Seeders\User\UserTableSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,7 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserTableSeeder::class,
             CategorySeeder::class,
-            NoteSeeder::class    
+            NoteSeeder::class,
+            ResourceSeeder::class, 
         ]);
             // \App\Models\User::factory(10)->create();
         // \App\Models\User::factory()->create([
