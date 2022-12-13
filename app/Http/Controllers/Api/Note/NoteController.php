@@ -50,6 +50,14 @@ class NoteController extends Controller
             'data' => $noteResource
         ]);
     }
+    public function showall(Note $note)
+    {
+        $notes = Note::with(['resources'])->get();
+        $listaNotas = NoteResource::collection($notes);
+        return response()->json([
+            'data' => $listaNotas
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.

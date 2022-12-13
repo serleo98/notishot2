@@ -13,7 +13,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $category = Category::where('description' , "Covid");
-        is_null($category)? : Category::create(['description' => "Covid",'status' => true]);
+        Category::create(['description' => "Copa Mundial Qatar 2022",'status' => true]);
+        Category::create(['description' => "Covid",'status' => true]);
     }
 }
