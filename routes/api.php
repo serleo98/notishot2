@@ -16,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    
     Route::namespace('Api\Auth')->group(function () {
         Route::post('login', 'LoginController@login')->name('login');
         Route::post('logout', 'LoginController@logout')->name('logout');
+    });
+
+    Route::prefix('public')->group(function () {
+        Route::namespace('Api\User')->group(function () {
+        Route::post('store', 'UserController@store');
+        });
     });
 
     Route::middleware(['auth:api', 'is.role:administrador'])->prefix('admin')->group(function () {
@@ -28,9 +33,7 @@ Route::prefix('v1')->group(function () {
          });
     });
 
-    Route::middleware(['auth:api', 'is.role:moderador'])->prefix('moderator')->group(function () {
-
-    });
+    Route::middleware(['auth:api', 'is.role:moderador'])->prefix('moderator')->group(function () {});
 
     Route::prefix('public')->group(function () {
         Route::namespace('Api\Note')->group(function () {
